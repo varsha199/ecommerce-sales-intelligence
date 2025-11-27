@@ -1,13 +1,37 @@
 import streamlit as st
+
+# ------------------------------------------------------
+# 🔐 LOAD STREAMLIT SECRETS FIRST — MUST BE AT THE TOP
+# ------------------------------------------------------
+try:
+    OPENAI_KEY = st.secrets["OPENAI_API_KEY"]
+except KeyError:
+    st.error("❌ OPENAI_API_KEY missing in Streamlit secrets.")
+    st.stop()
+
+try:
+    NEON_CONN = st.secrets["NEON_CONNECTION_STRING"]
+except KeyError:
+    st.error("❌ NEON_CONNECTION_STRING missing in Streamlit secrets.")
+    st.stop()
+
+# ------------------------------------------------------
+# Now import everything else
+# ------------------------------------------------------
 import pandas as pd
 import plotly.express as px
 from sqlalchemy import create_engine
 from prophet import Prophet
-import os
-from dotenv import load_dotenv
 from openai import OpenAI
 from typing import Literal
 from pydantic import BaseModel, Field
+
+# Create OpenAI client AFTER secrets load
+client = OpenAI(api_key=OPENAI_KEY)
+
+# Create DB engine AFTER secrets load
+engine = create_engine(NEON_CONN)
+
 
 # ------------ Structured Output Models ------------
 
@@ -64,16 +88,17 @@ def analytics_agent(user_query: str) -> AnalyticsResponse:
     ]
 
     # ✅ Structured OpenAI Call
-    completion = client.beta.chat.completions.parse(
+    completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=messages,
-        response_format=AnalyticsResponse,
-        temperature=0.1
+        response_format={"type": "json_object"}
     )
+    raw = completion.choices[0].message.content
 
-    # ✅ Parsed structured output
-    return completion.choices[0].message.parsed
-
+    # Parse JSON into Pydantic model
+    data = json.loads(raw)
+    return AnalyticsResponse(**data)
+    
 # ✅ ---------- Execute SQL & Return DataFrame ---------- ✅
 
 def run_analytics_query(sql_query: str) -> pd.DataFrame:
@@ -171,24 +196,8 @@ def create_chart_from_spec(df: pd.DataFrame, chart_spec) -> px.scatter:
 
     return fig
 
-# ------------------------------------------------------
-# 🔐 LOAD ENVIRONMENT VARIABLES
-# ------------------------------------------------------
-load_dotenv()
-NEON_CONN = os.getenv("NEON_CONNECTION_STRING")
-OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
-if not NEON_CONN:
-    st.error("❌ NEON_CONNECTION_STRING missing in .env")
-if not OPENAI_KEY:
-    st.error("❌ OPENAI_API_KEY missing in .env")
 
-client = OpenAI(api_key=OPENAI_KEY)
-
-# ------------------------------------------------------
-# 🗄️ DATABASE CONNECTION
-# ------------------------------------------------------
-engine = create_engine(NEON_CONN)
 
 # ------------------------------------------------------
 # 🎛️ PAGE SETUP
