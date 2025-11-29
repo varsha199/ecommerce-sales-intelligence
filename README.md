@@ -119,8 +119,6 @@ Data Handling	Pandas, SQLAlchemy
 👤 Author
 
 Name: Varsha Maurya
-LinkedIn: https://www.linkedin.com/in/varsha-maurya/ 
-GitHub: https://github.com/varsha199/ecommerce-sales-intelligence
 
 ✅ License
 
