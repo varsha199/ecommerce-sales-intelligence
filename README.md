@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://www.kaggle.com/datasets/carrie1/ecommerce-data">📂 Dataset</a> •
+  <a href="https://docs.google.com/presentation/d/1cjnKiHyPptWMAusA7GwoP1Y1TfgdDPicUE5wX7pS-Nw/edit?slide=id.g3a9d2fb4956_0_276#slide=id.g3a9d2fb4956_0_276">📑 Presentation</a> •
+  <a href="https://narrow-novel-374.notion.site/Varsha-Maurya-s-Portfolio-2a3eb66ee1388189b0e4cf820f5f9336">🌐 Portfolio</a> •
+  <a href="https://www.linkedin.com/in/varsha-maurya/">💼 LinkedIn</a> •
+  <a href="https://github.com/varsha199/ecommerce-sales-intelligence">🐙 GitHub</a>
+</p>
+
+<br>
+
 📊 Ecommerce Sales Intelligence & Forecasting Dashboard
 
 An end-to-end data analytics project that transforms raw ecommerce data into a powerful interactive dashboard featuring:
